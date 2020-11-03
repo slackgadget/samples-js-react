@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import { BrowserRouter as Router, Route, useHistory } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import { Security, SecureRoute, LoginCallback } from '@okta/okta-react';
 import { Container } from 'semantic-ui-react';
 import config from './config';
@@ -22,11 +22,11 @@ import Navbar from './Navbar';
 import Profile from './Profile';
 
 const HasAccessToRouter = () => {
-  const history = useHistory(); // example from react-router
+  const navigate = useNavigate(); // example from react-router
 
   const customAuthHandler = () => {
     // Redirect to the /login page that has a CustomLoginComponent
-    history.push('/login');
+    navigate('/login');
   };
 
   return (
@@ -36,11 +36,13 @@ const HasAccessToRouter = () => {
     >
       <Navbar />
       <Container text style={{ marginTop: '7em' }}>
-        <Route path="/" exact component={Home} />
-        <Route path="/login/callback" component={LoginCallback} />
-        <Route path="/login" component={CustomLoginComponent} />
-        <SecureRoute path="/messages" component={Messages} />
-        <SecureRoute path="/profile" component={Profile} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login/callback" element={<LoginCallback />} />
+          <Route path="/login" element={<CustomLoginComponent />} />
+          <SecureRoute path="/profile/*" element={<Profile />} />
+          <SecureRoute path="/messages/*" element={<Messages />} />
+        </Routes>
       </Container>
     </Security>
   );

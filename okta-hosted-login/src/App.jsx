@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Security, SecureRoute, LoginCallback } from '@okta/okta-react';
 import { Container } from 'semantic-ui-react';
 import config from './config';
@@ -25,10 +25,12 @@ const App = () => (
     <Security {...config.oidc}>
       <Navbar />
       <Container text style={{ marginTop: '7em' }}>
-        <Route path="/" exact component={Home} />
-        <Route path="/login/callback" component={LoginCallback} />
-        <SecureRoute path="/messages" component={Messages} />
-        <SecureRoute path="/profile" component={Profile} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login/callback" element={<LoginCallback />} />
+          <SecureRoute path="/profile/*" element={<Profile />} />
+          <SecureRoute path="/messages/*" element={<Messages />} />
+        </Routes>
       </Container>
     </Security>
   </Router>
