@@ -43,22 +43,24 @@ const Login = () => {
       },
     });
 
-    widget.renderEl(
-      { el: '#sign-in-widget' },
-      ({ tokens }) => {
-        // Add tokens to storage
-        const tokenManager = authService.getTokenManager();
-        tokenManager.add('idToken', tokens.idToken);
-        tokenManager.add('accessToken', tokens.accessToken);
+    widget.showSignInToGetTokens({
+      el: '#sign-in-widget',
+      scopes,
+    }).then((tokens) => {
+      // Add tokens to storage
+      const tokenManager = authService.getTokenManager();
+      tokenManager.add('idToken', tokens.idToken);
+      tokenManager.add('accessToken', tokens.accessToken);
 
-        // Return to the original URL (if auth was initiated from a secure route), falls back to the origin
-        const fromUri = authService.getFromUri();
-        window.location.assign(fromUri);
-      },
-      (err) => {
-        throw err;
-      },
-    );
+      // Remove the widget
+      widget.remove();
+
+      // Return to the original URL (if auth was initiated from a secure route), falls back to the origin
+      const fromUri = authService.getFromUri();
+      window.location.assign(fromUri);
+    }).catch((err) => {
+      throw err;
+    });
   }, [authService]);
 
   return (
